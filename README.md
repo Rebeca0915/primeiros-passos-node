@@ -28,10 +28,10 @@ Durante o desenvolvimento, o comando `npm run dev` inicia o servidor com reiníc
 | `POST` | `/servicos` | Cadastrar um serviço |
 | `GET` | `/servicos` | Listar todos os serviços |
 | `GET` | `/servicos/:id` | Buscar um serviço pelo ID |
-| `PUT` | `/servicos/:id` | Atualizar um serviço |
+| `PATCH` | `/servicos/:id` | Atualizar parte de um serviço |
 | `DELETE` | `/servicos/:id` | Excluir um serviço |
 
-Os dados ficam somente na memória. Ao reiniciar o servidor, a lista volta a ficar vazia.
+Os dados ficam somente na memória. Ao reiniciar o servidor, os 12 serviços iniciais são carregados novamente.
 
 ## JSON para o POST
 
@@ -54,10 +54,21 @@ No Insomnia, use `POST http://localhost:3000/servicos`, selecione o corpo JSON e
 1. Faça o `POST` e anote o `id` retornado.
 2. Faça `GET /servicos` para conferir a lista.
 3. Faça `GET /servicos/1` usando o ID retornado.
-4. Envie o mesmo formato do JSON em `PUT /servicos/1`, alterando algum campo.
+4. Envie um ou mais campos em `PATCH /servicos/1`, sem precisar enviar o objeto inteiro.
 5. Faça `DELETE /servicos/1`.
 6. Repita um `GET /servicos/1` para verificar a resposta 404.
 
 ## Validações
 
-Os campos de texto são obrigatórios e não podem ficar vazios. `preco` deve ser um número maior ou igual a zero, e `disponivel` deve ser booleano (`true` ou `false`). JSON inválido retorna 400 e serviço ou rota inexistente retorna 404.
+Os campos de texto, `preco` e `disponivel` são obrigatórios no `POST`. No `PATCH`, somente os campos enviados são validados. Textos não podem ficar vazios, `preco` deve ser maior ou igual a zero e `disponivel` deve ser booleano. JSON inválido retorna 400 e serviço ou rota inexistente retorna 404.
+
+## JSON para o PATCH
+
+```json
+{
+  "preco": 100,
+  "disponivel": false
+}
+```
+
+O campo `id` não é alterado pelo `PATCH`.
