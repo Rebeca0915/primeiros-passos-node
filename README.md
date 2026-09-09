@@ -33,6 +33,21 @@ Durante o desenvolvimento, o comando `npm run dev` inicia o servidor com reiníc
 
 Os dados ficam somente na memória. Ao reiniciar o servidor, os 12 serviços iniciais são carregados novamente.
 
+## Acesso às rotas
+
+As rotas `GET` são públicas. Para `POST`, `PATCH` e `DELETE`, envie o cabeçalho abaixo:
+
+```text
+Authorization: Bearer seu-token
+```
+
+O valor de `seu-token` deve ser igual ao valor da variável de ambiente `TOKEN_SECRET`. No PowerShell, por exemplo:
+
+```powershell
+$env:TOKEN_SECRET = "meu-token"
+npm start
+```
+
 ## JSON para o POST
 
 ```json

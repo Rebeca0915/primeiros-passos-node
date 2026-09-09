@@ -1,4 +1,5 @@
 import express from "express";
+import"dotenv/config";
 
 const app = express();
 const port = 3000;
@@ -25,14 +26,22 @@ function autenticar(req, res, next) {
   const authHeader = req.headers.authorization;
   const tokenSecret = process.env.TOKEN_SECRET;
 
-  if (authHeader !== `Bearer ${tokenSecret}`) {
+  if (!tokenSecret || authHeader !== `Bearer ${tokenSecret}`) {
     return res.status(401).json({
-       erro: "Acesso não autorizado. Token inválido ou ausente."
+      erro: "Acesso não autorizado. Token inválido ou ausente."
     });
   }
 
   next();
 }
+
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    return next();
+  }
+
+  autenticar(req, res, next);
+});
 
 app.get("/", (req, res) => {
   res.json({ mensagem: "API FazAí funcionando!", versao: "AV1" });
