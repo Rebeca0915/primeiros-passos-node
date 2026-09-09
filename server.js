@@ -35,14 +35,6 @@ function autenticar(req, res, next) {
   next();
 }
 
-app.use((req, res, next) => {
-  if (req.method === "GET") {
-    return next();
-  }
-
-  autenticar(req, res, next);
-});
-
 app.get("/", (req, res) => {
   res.json({ mensagem: "API FazAí funcionando!", versao: "AV1" });
 });
@@ -61,7 +53,7 @@ app.get("/servicos/:id", (req, res) => {
   res.json(servico);
 });
 
-app.post("/servicos", (req, res) => {
+app.post("/servicos", autenticar, (req, res) => {
   const erro = validarServico(req.body);
 
   if (erro) {
@@ -74,7 +66,7 @@ app.post("/servicos", (req, res) => {
   res.status(201).json({ mensagem: "Serviço cadastrado com sucesso.", servico: novoServico });
 });
 
-app.patch("/servicos/:id", (req, res) => {
+app.patch("/servicos/:id", autenticar, (req, res) => {
   const servico = encontrarServico(req.params.id);
 
   if (!servico) {
@@ -107,7 +99,7 @@ app.patch("/servicos/:id", (req, res) => {
   res.json({ mensagem: "Serviço atualizado com sucesso.", servico });
 });
 
-app.delete("/servicos/:id", (req, res) => {
+app.delete("/servicos/:id", autenticar, (req, res) => {
   const indice = servicos.findIndex((servico) => servico.id === Number(req.params.id));
 
   if (indice === -1) {
