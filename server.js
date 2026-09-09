@@ -21,6 +21,19 @@ let servicos = [
   { id: 12, titulo: "Manutenção de chuveiro", descricao: "Avaliação e troca de resistência de chuveiro elétrico", categoria: "Manutenção", preco: 85, cidade: "Valinhos", prestador: "Sara Freitas", disponivel: true }
 ];
 
+function autenticar(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const tokenSecret = process.env.TOKEN_SECRET;
+
+  if (authHeader !== `Bearer ${tokenSecret}`) {
+    return res.status(401).json({
+       erro: "Acesso não autorizado. Token inválido ou ausente."
+    });
+  }
+
+  next();
+}
+
 app.get("/", (req, res) => {
   res.json({ mensagem: "API FazAí funcionando!", versao: "AV1" });
 });
