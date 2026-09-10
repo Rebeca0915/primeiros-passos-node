@@ -1,10 +1,42 @@
 import express from "express";
 import "dotenv/config";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "TCC app FazAí",
+      version: "1.0.0",
+      description: "API para gerenciamento de serviços do app FazAí"
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+        description: "Descrição do servidor local"
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          description: "Informe o token no formato: Bearer TOKEN_SECRET"
+        }
+      }
+    }
+  },
+  apis: ["./server.js"]
+};
+
+const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 let proximoId = 13;
 let servicos = [
