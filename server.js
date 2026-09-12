@@ -71,10 +71,28 @@ app.get("/", (req, res) => {
   res.json({ mensagem: "API FazAí funcionando!", versao: "AV1" });
 });
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Verifica se a API está funcionando
+ *     responses:
+ *       200:
+ *         description: API funcionando
+ */
 app.get("/servicos", (req, res) => {
   res.json(servicos);
 });
 
+/**
+ * @swagger
+ * /servicos:
+ *   get:
+ *     summary: Lista todos os serviços
+ *     responses:
+ *       200:
+ *         description: Lista de serviços
+ */
 app.get("/servicos/:id", (req, res) => {
   const servico = encontrarServico(req.params.id);
 
@@ -85,6 +103,23 @@ app.get("/servicos/:id", (req, res) => {
   res.json(servico);
 });
 
+/**
+ * @swagger
+ * /servicos/{id}:
+ *   get:
+ *     summary: Busca um serviço pelo ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Serviço encontrado
+ *       404:
+ *         description: Serviço não encontrado
+ */
 app.post("/servicos", autenticar, (req, res) => {
   const erro = validarServico(req.body);
 
@@ -98,6 +133,36 @@ app.post("/servicos", autenticar, (req, res) => {
   res.status(201).json({ mensagem: "Serviço cadastrado com sucesso.", servico: novoServico });
 });
 
+/**
+ * @swagger
+ * /servicos:
+ *   post:
+ *     summary: Cadastra um serviço
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [titulo, descricao, categoria, preco, cidade, prestador, disponivel]
+ *             properties:
+ *               titulo: { type: string }
+ *               descricao: { type: string }
+ *               categoria: { type: string }
+ *               preco: { type: number }
+ *               cidade: { type: string }
+ *               prestador: { type: string }
+ *               disponivel: { type: boolean }
+ *     responses:
+ *       201:
+ *         description: Serviço cadastrado
+ *       400:
+ *         description: Dados inválidos
+ *       401:
+ *         description: Não autorizado
+ */
 app.patch("/servicos/:id", autenticar, (req, res) => {
   const servico = encontrarServico(req.params.id);
 
@@ -131,6 +196,31 @@ app.patch("/servicos/:id", autenticar, (req, res) => {
   res.json({ mensagem: "Serviço atualizado com sucesso.", servico });
 });
 
+/**
+ * @swagger
+ * /servicos/{id}:
+ *   patch:
+ *     summary: Atualiza um serviço
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Serviço atualizado
+ *       401:
+ *         description: Não autorizado
+ */
 app.delete("/servicos/:id", autenticar, (req, res) => {
   const indice = servicos.findIndex((servico) => servico.id === Number(req.params.id));
 
@@ -142,6 +232,25 @@ app.delete("/servicos/:id", autenticar, (req, res) => {
   res.json({ mensagem: "Serviço excluído com sucesso." });
 });
 
+/**
+ * @swagger
+ * /servicos/{id}:
+ *   delete:
+ *     summary: Exclui um serviço
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Serviço excluído
+ *       401:
+ *         description: Não autorizado
+ */
 app.use((req, res) => {
   res.status(404).json({ erro: "Rota não encontrada." });
 });
