@@ -15,7 +15,11 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+<<<<<<< HEAD
     "swagger-jsdoc": "^6.2.8",
+=======
+    "swagger-jsdoc": "^6.3.0",
+>>>>>>> 557e39b181c610a98a779b7dd5eae244fd56ce68
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
