@@ -4,7 +4,6 @@
   "description": "API REST do FazAí para contratação de serviços",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
@@ -13,8 +12,11 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

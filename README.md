@@ -1,54 +1,63 @@
 # FazAí API
 
-API REST acadêmica para cadastro de serviços rápidos e profissionais.
+API REST do FazAí, uma plataforma para encontrar e contratar pequenos serviços, como encanamento, elétrica, limpeza, pintura e jardinagem. A entidade principal é **Serviço**, com os campos `id`, `titulo`, `descricao`, `categoria`, `preco`, `cidade`, `prestador` e `disponivel`.
 
 ## Tecnologias
 
-- Node.js
-- Express
-- JavaScript
-- Armazenamento em memória
+- Node.js e Express
+- dotenv para configuração do ambiente
+- Swagger UI e swagger-jsdoc para documentação
+- bcrypt está instalado para uma evolução futura; não é usado nesta versão
+- Dados armazenados em memória, sem banco de dados
 
-## Como iniciar
+## Instalação e inicialização
+
+Instale as dependências:
 
 ```bash
 npm install
-npm start
 ```
 
-O servidor ficará disponível em `http://localhost:3000`.
-
-Durante o desenvolvimento, o comando `npm run dev` inicia o servidor com reinício automático usando o Nodemon.
-
-## Rotas da AV1
-
-| Método | Rota | Objetivo |
-| --- | --- | --- |
-| `GET` | `/` | Verificar se a API está funcionando |
-| `POST` | `/servicos` | Cadastrar um serviço |
-| `GET` | `/servicos` | Listar todos os serviços |
-| `GET` | `/servicos/:id` | Buscar um serviço pelo ID |
-| `PATCH` | `/servicos/:id` | Atualizar parte de um serviço |
-| `DELETE` | `/servicos/:id` | Excluir um serviço |
-
-Os dados ficam somente na memória. Ao reiniciar o servidor, os 12 serviços iniciais são carregados novamente.
-
-## Acesso às rotas
-
-As rotas `GET` são públicas. Para `POST`, `PATCH` e `DELETE`, envie o cabeçalho abaixo:
-
-```text
-Authorization: Bearer seu-token
-```
-
-O valor de `seu-token` deve ser igual ao valor da variável de ambiente `TOKEN_SECRET`. No PowerShell, por exemplo:
+Copie `.env.example` para `.env` e ajuste o token se desejar. No PowerShell:
 
 ```powershell
-$env:TOKEN_SECRET = "meu-token"
+Copy-Item .env.example .env
+```
+
+Depois, inicie a API:
+
+```bash
 npm start
 ```
 
-## JSON para o POST
+Durante o desenvolvimento, use `npm run dev`. Por padrão, o servidor fica em `http://localhost:3000`.
+
+## Autenticação
+
+`GET /servicos` e `GET /servicos/:id` são públicas. `POST`, `PATCH` e `DELETE` exigem o cabeçalho `Authorization: Bearer TOKEN`, em que `TOKEN` deve corresponder à variável de ambiente `TOKEN_SECRETO`. O exemplo incluído em `.env.example` usa `meu-token`.
+
+Sem token ou com token inválido, a API responde com HTTP 401:
+
+```json
+{
+  "erro": "Acesso não autorizado. Token ausente ou inválido"
+}
+```
+
+## Rotas
+
+| Método | Rota | Acesso | Descrição |
+| --- | --- | --- | --- |
+| GET | `/` | Público | Verifica se a API está funcionando |
+| GET | `/servicos` | Público | Lista os serviços |
+| GET | `/servicos/:id` | Público | Busca um serviço por ID |
+| POST | `/servicos` | Token | Cadastra um serviço |
+| PATCH | `/servicos/:id` | Token | Atualiza parcialmente um serviço |
+| DELETE | `/servicos/:id` | Token | Exclui um serviço |
+
+## Exemplos de corpo
+
+O `POST` exige todos os campos, exceto `id`, que é gerado pela API:
 
 ```json
 {
@@ -62,22 +71,7 @@ npm start
 }
 ```
 
-No Insomnia, use `POST http://localhost:3000/servicos`, selecione o corpo JSON e envie o exemplo acima.
-
-## Sequência recomendada no Insomnia
-
-1. Faça o `POST` e anote o `id` retornado.
-2. Faça `GET /servicos` para conferir a lista.
-3. Faça `GET /servicos/1` usando o ID retornado.
-4. Envie um ou mais campos em `PATCH /servicos/1`, sem precisar enviar o objeto inteiro.
-5. Faça `DELETE /servicos/1`.
-6. Repita um `GET /servicos/1` para verificar a resposta 404.
-
-## Validações
-
-Os campos de texto, `preco` e `disponivel` são obrigatórios no `POST`. No `PATCH`, somente os campos enviados são validados. Textos não podem ficar vazios, `preco` deve ser maior ou igual a zero e `disponivel` deve ser booleano. JSON inválido retorna 400 e serviço ou rota inexistente retorna 404.
-
-## JSON para o PATCH
+O `PATCH` aceita somente os campos que deseja alterar. O `id` não pode ser alterado:
 
 ```json
 {
@@ -86,4 +80,12 @@ Os campos de texto, `preco` e `disponivel` são obrigatórios no `POST`. No `PAT
 }
 ```
 
-O campo `id` não é alterado pelo `PATCH`.
+Textos devem ser não vazios, `preco` deve ser um número maior ou igual a zero e `disponivel` deve ser booleano. Campos de texto, `preco` e `disponivel` são obrigatórios no cadastro; no `PATCH`, somente os campos enviados são validados.
+
+## Documentação interativa
+
+Com o servidor iniciado, acesse [http://localhost:3000/api-docs](http://localhost:3000/api-docs).
+
+## Armazenamento
+
+Os 12 serviços de exemplo são mantidos em um array em memória. Cadastros, alterações e exclusões duram somente até o servidor ser reiniciado; não há banco de dados nesta versão.
