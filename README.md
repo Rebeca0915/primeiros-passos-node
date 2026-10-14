@@ -1,16 +1,32 @@
 # FazAí API
 
-API REST do FazAí, uma plataforma para encontrar e contratar pequenos serviços, como encanamento, elétrica, limpeza, pintura e jardinagem. A entidade principal é **Serviço**, com os campos `id`, `titulo`, `descricao`, `categoria`, `preco`, `cidade`, `prestador` e `disponivel`.
+API REST do FazAí, uma plataforma para encontrar e contratar pequenos serviços, como encanamento, elétrica, limpeza, pintura, jardinagem, montagem de móveis, instalação, manutenção e pequenos reparos. A entidade principal é **Serviço**, com os campos `id`, `titulo`, `descricao`, `categoria`, `preco`, `cidade`, `prestador` e `disponivel`.
+
+## Estrutura do projeto
+
+```text
+src/
+├── config/
+│   └── swagger.js
+├── controllers/
+│   └── servicosController.js
+├── data/
+│   └── servicos.js
+├── middlewares/
+│   └── autenticar.js
+└── routes/
+    └── servicosRoutes.js
+```
 
 ## Tecnologias
 
 - Node.js e Express
 - dotenv para configuração do ambiente
-- Swagger UI e swagger-jsdoc para documentação
-- bcrypt está instalado para uma evolução futura; não é usado nesta versão
+- Swagger UI e swagger-jsdoc para documentação OpenAPI 3.0
+- bcrypt instalado para uma evolução futura; não é usado nesta versão
 - Dados armazenados em memória, sem banco de dados
 
-## Instalação e inicialização
+## Instalação e execução
 
 Instale as dependências:
 
@@ -18,31 +34,35 @@ Instale as dependências:
 npm install
 ```
 
-Copie `.env.example` para `.env` e ajuste o token se desejar. No PowerShell:
+Copie `.env.example` para `.env` e ajuste o token didático se desejar. No PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Depois, inicie a API:
+Inicie a API:
 
 ```bash
 npm start
 ```
 
-Durante o desenvolvimento, use `npm run dev`. Por padrão, o servidor fica em `http://localhost:3000`.
+Para desenvolvimento com reinicialização automática:
+
+```bash
+npm run dev
+```
+
+Por padrão, o servidor fica em `http://localhost:3000`.
 
 ## Autenticação
 
-`GET /servicos` e `GET /servicos/:id` são públicas. `POST`, `PATCH` e `DELETE` exigem o cabeçalho `Authorization: Bearer TOKEN`, em que `TOKEN` deve corresponder à variável de ambiente `TOKEN_SECRETO`. O exemplo incluído em `.env.example` usa `meu-token`.
+As rotas `GET /servicos` e `GET /servicos/:id` são públicas. As rotas `POST`, `PATCH` e `DELETE` exigem o cabeçalho:
 
-Sem token ou com token inválido, a API responde com HTTP 401:
-
-```json
-{
-  "erro": "Acesso não autorizado. Token ausente ou inválido"
-}
+```text
+Authorization: Bearer meu-token
 ```
+
+O valor depois de `Bearer` deve corresponder à variável `TOKEN_SECRETO` definida no arquivo `.env`. Sem token ou com token inválido, a API responde com HTTP 401.
 
 ## Rotas
 
@@ -50,14 +70,14 @@ Sem token ou com token inválido, a API responde com HTTP 401:
 | --- | --- | --- | --- |
 | GET | `/` | Público | Verifica se a API está funcionando |
 | GET | `/servicos` | Público | Lista os serviços |
-| GET | `/servicos/:id` | Público | Busca um serviço por ID |
+| GET | `/servicos/:id` | Público | Busca um serviço pelo ID |
 | POST | `/servicos` | Token | Cadastra um serviço |
 | PATCH | `/servicos/:id` | Token | Atualiza parcialmente um serviço |
 | DELETE | `/servicos/:id` | Token | Exclui um serviço |
 
-## Exemplos de corpo
+O `POST` exige `titulo`, `descricao`, `categoria`, `preco`, `cidade`, `prestador` e `disponivel`. Textos não podem ser vazios, `preco` deve ser um número maior ou igual a zero e `disponivel` deve ser booleano. O `PATCH` valida somente os campos enviados, não permite alterar o `id` e retorna HTTP 400 quando nenhum campo válido é enviado.
 
-O `POST` exige todos os campos, exceto `id`, que é gerado pela API:
+Exemplo de corpo para cadastro:
 
 ```json
 {
@@ -71,7 +91,7 @@ O `POST` exige todos os campos, exceto `id`, que é gerado pela API:
 }
 ```
 
-O `PATCH` aceita somente os campos que deseja alterar. O `id` não pode ser alterado:
+Exemplo de atualização parcial:
 
 ```json
 {
@@ -80,12 +100,10 @@ O `PATCH` aceita somente os campos que deseja alterar. O `id` não pode ser alte
 }
 ```
 
-Textos devem ser não vazios, `preco` deve ser um número maior ou igual a zero e `disponivel` deve ser booleano. Campos de texto, `preco` e `disponivel` são obrigatórios no cadastro; no `PATCH`, somente os campos enviados são validados.
-
-## Documentação interativa
+## Swagger
 
 Com o servidor iniciado, acesse [http://localhost:3000/api-docs](http://localhost:3000/api-docs).
 
 ## Armazenamento
 
-Os 12 serviços de exemplo são mantidos em um array em memória. Cadastros, alterações e exclusões duram somente até o servidor ser reiniciado; não há banco de dados nesta versão.
+Os 12 serviços iniciais ficam em um array em memória. Cadastros, alterações e exclusões permanecem somente até o servidor ser reiniciado; esta versão não utiliza banco de dados.

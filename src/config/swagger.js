@@ -17,13 +17,12 @@ const options = {
       securitySchemes: {
         bearerAuth: {
           type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT"
+          scheme: "bearer"
         }
       }
     }
   },
-  apis: ["./server.js"]
+  apis: ["./src/routes/*.js"]
 };
 
 const swaggerSpec = swaggerJsdoc(options);
