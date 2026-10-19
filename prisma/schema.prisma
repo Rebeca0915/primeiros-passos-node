@@ -11,3 +11,19 @@ generator client {
 datasource db {
   provider = "mysql"
 }
+
+model Servico {
+  id          Int      @id @default(autoincrement())
+  titulo      String   @db.VarChar(100)
+  descricao   String   @db.Text
+  categoria   String   @db.VarChar(50)
+  preco       Decimal  @db.Decimal(10, 2)
+  cidade      String   @db.VarChar(100)
+  prestador   String   @db.VarChar(100)
+  disponivel  Boolean  @default(true)
+  criadoEm    DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("servicos")
+}
+
