@@ -14,4 +14,3 @@ const servicos = [
 ];
 
 export default servicos;
- id, titulo, descricao, categoria, preco, cidade, prestador, disponivel

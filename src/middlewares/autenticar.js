@@ -1,6 +1,6 @@
 export default function autenticar(req, res, next) {
   const autorizacao = req.headers.authorization;
-  const tokenSecreto = process.env.TOKEN_SECRETO;
+  const tokenSecreto = process.env.TOKEN_SECRET;
 
   if (!tokenSecreto || autorizacao !== `Bearer ${tokenSecreto}`) {
     return res.status(401).json({
