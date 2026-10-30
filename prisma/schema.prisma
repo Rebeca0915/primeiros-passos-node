@@ -27,3 +27,15 @@ model Servico {
   @@map("servicos")
 }
 
+model Usuario {
+  id          Int      @id @default(uuid()) @db.VarChar(36)
+  nome        String   @db.VarChar(100)
+  email       String   @unique @db.VarChar(100)
+  senha       String   @db.VarChar(255)
+  criadoEm    DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+npx
+  @@map("usuarios")
+}
+
+
